@@ -1,4 +1,4 @@
-// add a grid composed of 8 x 4 squeres
+// add a grid composed of 16 x 16 squeres
 
 const ROWS = 16;
 const COLS = 16;
@@ -16,10 +16,25 @@ const createCells = () =>{
         const div = document.createElement("div");
         div.setAttribute("id", `${index}`);
         div.setAttribute("class", "grid-item");
-        // div.innerText = `${index + 1}`;
+        div.setAttribute("style", `background-color: #000000`);
         cells.push(div);
     }
 }
+
+// brush color
+const brushColor = document.createElement("div");
+const inputColor = document.createElement("input");
+const labelColor = document.createElement("label");
+
+// default color of the brush
+inputColor.setAttribute("type", "color");
+// inputColor.setAttribute("pattern", "#[a-f0-9]{6}");
+inputColor.setAttribute("value", "#ffffff");
+inputColor.setAttribute("id", "inputColor");
+labelColor.setAttribute("for", "inputColor");
+brushColor.append(inputColor);
+brushColor.append(labelColor);
+body.append(brushColor);
 
 const addCellsToMain = () => {
     for (const cell of cells) {
@@ -36,37 +51,16 @@ const getRandomColor = () => {
     return color;
   }
   
-const fadeOutEffect = (fadeTarget) => {
-    if (!fadeTarget.style.opacity) {
-        fadeTarget.style.opacity = 1;
-        requestAnimationFrame(() => {
-            fadeOutEffect(fadeTarget);
-        }); 
-    }
-    if (fadeTarget.style.opacity > 0) {
-        fadeTarget.style.opacity -= 0.0015;
-        requestAnimationFrame(() => {
-            fadeOutEffect(fadeTarget);
-    });
-    }
-    else{
-        fadeTarget.style.background = "white";
-        fadeTarget.style.opacity = 1;
-    }
-
-
-}
-
 const changeCellBgColor = (cell, color = null) => {
      {
         if(color !== null){
-            fadeOutEffect(cell)
+            // fadeOutEffect(cell)
         }else{
             if(cell.getAttribute("style") === null || cell.getAttribute("style") === ""){
-                cell.setAttribute("style", `background-color: ${getRandomColor()}`);
+                cell.setAttribute("style", `background-color: ${inputColor.value}`);
                 // cell.style.backgroundColor = getRandomColor();
             }else if(cell.getAttribute("style") !== null){
-                cell.setAttribute("style", `background-color: ${getRandomColor()}`);
+                cell.setAttribute("style", `background-color: ${inputColor.value}`);
                 // cell.style.backgroundColor = getRandomColor();
 
             }
@@ -80,25 +74,56 @@ const attachEventListenersClick = () => {
         cell.addEventListener("mousedown", event => {
             changeCellBgColor(cell);
         });
-        cell.addEventListener("mouseup", event => {
-            changeCellBgColor(cell, "white");
-        });
     }
 }
 
-// add hover eventlisteners to each of the cells
-const attachEventListenersHover = () => {
-    for(const cell of cells){
-        cell.addEventListener("mouseover", event => {
-            changeCellBgColor(cell);
-        });
-        cell.addEventListener('mouseleave', event => {
-            changeCellBgColor(cell, "white");
-        });
-    }
+const rgbToHex = (rgb) => {
+    console.log(rgb);
+    let array = rgb.split("(")[1].split(")")[0];
+    array = array.split(",");
+    let b = array.map(function(x){             //For each array element
+        x = parseInt(x).toString(16);      //Convert to a base16 string
+        return (x.length==1) ? "0"+x : x;  //Add zero if we get only one character
+    })
+    return "0x"+b.join("");
 }
+
+const cellCollors = () =>{
+let exportedMatrix = [];
+    cells.forEach((element, index) => {
+        exportedMatrix.push(rgbToHex(element.style.backgroundColor));
+    });
+
+    console.log(exportedMatrix.join(","));
+}
+
+const matrix = [
+    0x000000,0x000000,0x000000,0x000000,0xff0000,0xff0000,0xff0000,0x000000,0x000000,0xff0000,0xff0000,0xff0000,0x000000,0x000000,0x000000,0x000000,
+    0x000000,0x000000,0x000000,0xff0000,0xff0000,0xff0000,0xff0000,0x000000,0x000000,0xff0000,0xff0000,0xff0000,0xff0000,0x000000,0x000000,0x000000,
+    0x000000,0x000000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0x000000,0x000000,
+    0x000000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0x000000,
+    0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,
+    0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,
+    0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,
+    0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,
+    0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,
+    0x000000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0x000000,
+    0x000000,0x000000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0x000000,0x000000,
+    0x000000,0x000000,0x000000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0x000000,0x000000,0x000000,
+    0x000000,0x000000,0x000000,0x000000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0x000000,0x000000,0x000000,0x000000,
+    0x000000,0x000000,0x000000,0x000000,0x000000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0xff0000,0x000000,0x000000,0x000000,0x000000,0x000000,
+    0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0xff0000,0xff0000,0xff0000,0xff0000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,
+    0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0xff0000,0xff0000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000
+]
+
+const importMatrix = (array) => {
+    cells.forEach((element, index) => {
+        element.setAttribute("style", `background-color: ${array[index] === 0 ? "rgb(0,0,0)" : "#" + array[index].toString(16)}`);
+    })
+}
+
 
 createCells();
 addCellsToMain();
 attachEventListenersClick();
-attachEventListenersHover();
+// importMatrix(matrix);
